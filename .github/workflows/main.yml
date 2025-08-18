@@ -1,0 +1,37 @@
+name: Build FreeGLUT with Emscripten
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build WebAssembly app with Emscripten
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Emscripten
+        uses: mymindstorm/setup-emsdk@v12
+        with:
+          version: 3.1.60  # lub nowsza wersja emsdk
+
+      - name: Compile with emcc (GLUT + Emscripten loop)
+        run: |
+          mkdir -p dist
+          emcc main.cpp \
+            -s USE_GLUT=1 \
+            -s GLUT_VERSION=2 \
+            -s ALLOW_MEMORY_GROWTH=1 \
+            -s WASM=1 \
+            -o dist/index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          
