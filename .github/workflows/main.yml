@@ -23,8 +23,7 @@ jobs:
         run: |
           mkdir -p dist
           emcc main.cpp \
-            -s USE_GLUT=1 \
-            -s GLUT_VERSION=2 \
+            -s USE_GLFW=3 \
             -s ALLOW_MEMORY_GROWTH=1 \
             -s WASM=1 \
             -o dist/index.html
