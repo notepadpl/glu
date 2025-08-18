@@ -24,6 +24,7 @@ jobs:
           mkdir -p dist
           emcc main.cpp \
             -s USE_GLFW=3 \
+            -s LEGACY_GL_EMULATION=1 \
             -s ALLOW_MEMORY_GROWTH=1 \
             -s WASM=1 \
             -o dist/index.html
