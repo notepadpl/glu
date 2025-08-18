@@ -1,30 +1,30 @@
-#include <GL/glut.h>
+//emcc main.cpp -s USE_GLFW=3 -s WASM=1 -o dist/index.html
+#include <GLFW/glfw3.h>
 #include <emscripten/emscripten.h>
 
-void display() {
+GLFWwindow* window;
+
+void loop() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     glBegin(GL_TRIANGLES);
-    glColor3f(1.0, 0.0, 0.0);
-    glVertex2f(-0.5f, -0.5f);
-    glColor3f(0.0, 1.0, 0.0);
-    glVertex2f(0.5f, -0.5f);
-    glColor3f(0.0, 0.0, 1.0);
-    glVertex2f(0.0f, 0.5f);
+    glVertex2f(-0.5, -0.5);
+    glVertex2f( 0.5, -0.5);
+    glVertex2f( 0.0,  0.5);
     glEnd();
 
-    glFlush();
+    glfwSwapBuffers(window);
+    glfwPollEvents();
 }
 
-int main(int argc, char **argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowSize(640, 480);
-    glutCreateWindow("FreeGLUT with Emscripten Loop");
-    glutDisplayFunc(display);
+int main() {
+    if (!glfwInit()) return -1;
 
-    // Używamy pętli Emscripten zamiast glutMainLoop()
-    emscripten_set_main_loop(display, 0, 1);
+    window = glfwCreateWindow(640, 480, "GLFW + Emscripten", NULL, NULL);
+    if (!window) return -1;
+
+    glfwMakeContextCurrent(window);
+    emscripten_set_main_loop(loop, 0, 1);
 
     return 0;
 }
