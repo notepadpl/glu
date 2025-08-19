@@ -22,7 +22,7 @@ jobs:
       - name: Compile with emcc (GLUT + Emscripten loop)
         run: |
           mkdir -p dist
-          emcc glfw.cpp \
+          emcc Glfw2.cpp \
             -s USE_GLFW=3 \
             -s LEGACY_GL_EMULATION=1 \
             -s ALLOW_MEMORY_GROWTH=1 \
