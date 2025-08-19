@@ -3,42 +3,39 @@
 #include <emscripten/emscripten.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
 
-GLuint car;
-float carrot = 0.0f;
+struct Vertex {
+    float x, y, z;
+};
+
+std::vector<Vertex> vertices;
+GLuint carrot = 0;
 GLFWwindow* window;
 
 void loadObj(const char *fname)
 {
     FILE *fp;
     int read;
-    GLfloat x, y, z;
+    float x, y, z;
     char ch;
 
-    car = glGenLists(1);
     fp = fopen(fname, "r");
     if (!fp)
     {
-        printf("can't open file %s\n", fname);
+        printf("Can't open file %s\n", fname);
         exit(1);
     }
-    glPointSize(2.0);
-    glNewList(car, GL_COMPILE);
+
+    vertices.clear();
+    while (!feof(fp))
     {
-        glPushMatrix();
-        glBegin(GL_POINTS);
-        while (!(feof(fp)))
+        read = fscanf(fp, "%c %f %f %f", &ch, &x, &y, &z);
+        if (read == 4 && ch == 'v')
         {
-            read = fscanf(fp, "%c %f %f %f", &ch, &x, &y, &z);
-            if (read == 4 && ch == 'v')
-            {
-                glVertex3f(x, y, z);
-            }
+            vertices.push_back({x, y, z});
         }
-        glEnd();
-        glPopMatrix();
     }
-    glEndList();
     fclose(fp);
 }
 
@@ -47,8 +44,8 @@ void reshape(int w, int h)
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-
-    //glOrtho(-25,25,-2,2,0.1,100);
+    // Tutaj możesz odkomentować i dostosować, jeśli chcesz np. orto:
+    // glOrtho(-25, 25, -2, 2, 0.1, 100);
     glMatrixMode(GL_MODELVIEW);
 }
 
@@ -59,11 +56,18 @@ void drawCar()
     glColor3f(1.0f, 0.23f, 0.27f);
     glTranslatef(0.0f, -0.9f, 0.0f);
     glScalef(0.4f, 0.4f, 0.4f);
-    glRotatef(carrot, 0, 1, 0);
-    glCallList(car);
+    glRotatef((float)carrot, 0, 1, 0);
+
+    glBegin(GL_POINTS);
+    for (const auto& v : vertices)
+    {
+        glVertex3f(v.x, v.y, v.z);
+    }
+    glEnd();
+
     glPopMatrix();
 
-    carrot += 0.6f;
+    carrot += 1;
     if (carrot > 360) carrot -= 360;
 }
 
@@ -92,7 +96,6 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    // Prosta konfiguracja okna OpenGL
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
@@ -109,12 +112,10 @@ int main(int argc, char **argv)
 
     loadObj("tee.obj");
 
-    // ustaw początkowy viewport
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     reshape(width, height);
 
-    // zamiast while loop używamy emscripten_set_main_loop
     emscripten_set_main_loop(main_loop, 0, 1);
 
     return 0;
