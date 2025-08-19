@@ -39,7 +39,7 @@ if (ENVIRONMENT_IS_NODE) {
 
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
-// include: /tmp/tmpsi0c098g.js
+// include: /tmp/tmp1y6habpl.js
 
   if (!Module.expectedDataFileDownloads) {
     Module.expectedDataFileDownloads = 0;
@@ -220,21 +220,21 @@ Module['FS_createPath']("/", "asserts", true, true);
 
   })();
 
-// end include: /tmp/tmpsi0c098g.js
-// include: /tmp/tmpjbuwpzok.js
+// end include: /tmp/tmp1y6habpl.js
+// include: /tmp/tmplcl1h2dx.js
 
     // All the pre-js content up to here must remain later on, we need to run
     // it.
     if (Module['$ww'] || (typeof ENVIRONMENT_IS_PTHREAD != 'undefined' && ENVIRONMENT_IS_PTHREAD)) Module['preRun'] = [];
     var necessaryPreJSTasks = Module['preRun'].slice();
-  // end include: /tmp/tmpjbuwpzok.js
-// include: /tmp/tmpa82_si11.js
+  // end include: /tmp/tmplcl1h2dx.js
+// include: /tmp/tmpotvolx_a.js
 
     if (!Module['preRun']) throw 'Module.preRun should exist because file support used it; did a pre-js delete it?';
     necessaryPreJSTasks.forEach(function(task) {
       if (Module['preRun'].indexOf(task) < 0) throw 'All preRun tasks that exist before user pre-js code should remain after; did you replace Module or modify Module.preRun?';
     });
-  // end include: /tmp/tmpa82_si11.js
+  // end include: /tmp/tmpotvolx_a.js
 
 
 // Sometimes an existing Module object exists with properties
@@ -10746,6 +10746,7 @@ function dbg(...args) {
     };
   var _glColor3f = (r, g, b) => _glColor4f(r, g, b, 1);
 
+
   var _glEnd = () => {
       GLImmediate.prepareClientAttributes(GLImmediate.rendererComponents[GLImmediate.VERTEX], true);
       GLImmediate.firstVertex = 0;
@@ -12070,6 +12071,14 @@ function dbg(...args) {
       GLFW.hints[target] = hint;
     };
 
+  var _gluPerspective = (fov, aspect, near, far) => {
+      GLImmediate.matricesModified = true;
+      GLImmediate.matrixVersion[GLImmediate.currentMatrix] = (GLImmediate.matrixVersion[GLImmediate.currentMatrix] + 1)|0;
+      GLImmediate.matrix[GLImmediate.currentMatrix] =
+        GLImmediate.matrixLib.mat4.perspective(fov, aspect, near, far,
+                                                 GLImmediate.matrix[GLImmediate.currentMatrix]);
+    };
+
 
 
   
@@ -12152,6 +12161,8 @@ var wasmImports = {
   /** @export */
   glColor3f: _glColor3f,
   /** @export */
+  glEnable: _glEnable,
+  /** @export */
   glEnd: _glEnd,
   /** @export */
   glLoadIdentity: _glLoadIdentity,
@@ -12188,7 +12199,9 @@ var wasmImports = {
   /** @export */
   glfwTerminate: _glfwTerminate,
   /** @export */
-  glfwWindowHint: _glfwWindowHint
+  glfwWindowHint: _glfwWindowHint,
+  /** @export */
+  gluPerspective: _gluPerspective
 };
 var wasmExports = createWasm();
 var ___wasm_call_ctors = createExportWrapper('__wasm_call_ctors', 0);
