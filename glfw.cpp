@@ -110,7 +110,7 @@ int main(int argc, char **argv)
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    loadObj("/asserts/tee.obj");
+    loadObj("asserts/tee.obj");
 
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
