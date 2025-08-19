@@ -53,8 +53,8 @@ void drawCar()
 {
     glPushMatrix();
 
-    glColor3f(1.0f, 0.23f, 0.27f);
-    glTranslatef(0.0f, -0.9f, 0.0f);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glTranslatef(0.0f, 0.0f, 0.0f);
     glScalef(0.4f, 0.4f, 0.4f);
     glRotatef((float)carrot, 0, 1, 0);
 
